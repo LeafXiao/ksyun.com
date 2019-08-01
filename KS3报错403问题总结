@@ -1,0 +1,65 @@
+实际工作中经常遇到KS3报错403的问题，虽然有多种业务场景但是403报错的实质都是权限相关的问题。
+常见可能的原因包含：
+A，AK,SK使用的不对，或者与权限对应不上，不匹配；
+B，对应的bucket空间策略设置没有给访问的账户权限，或者是resource配置不正确；
+C，用户策略userpolicy配置不正确。
+
+首先关于空间策略，用户权限两个是独立的概念，很多用户以为在bucket配置了空间策略的“委托人”就是对用户授权了，实际上不是的。
+通俗的解释一下，希望您能明白：
+KS3上的文件都是money；
+空间策略（操作接口+资源+委托人）是允许什么人花多少钱的规则设置；
+用户策略（userpolicy）则是用户花钱的能力，一个三岁喝奶粉的小孩和一个需要买房买车娶媳妇儿的成年人花钱的能力肯定是不一样的嘛。
+所以你将一千万美刀给一个喝奶粉的小孩，即使他有这个权限拿到这个钱，但是他没有这个能力去消费掉。
+就这么个道理，希望能绑定您。如果您还是不明白，那就多阅读两遍官网资料吧。
+
+具体要阅读官方文档，权限概述：https://docs.ksyun.com/documents/5170
+空间策略介绍：https://docs.ksyun.com/documents/5177
+用户策略 userpolicy 介绍：https://docs.ksyun.com/documents/5178
+另外比较推荐的就是多看看：文档中心 > 对象存储(KS3) > 最佳实践 里面具体的例子。
+
+
+【KS3问题需要收集的信息：】
+1，客户的ID 登录用户名账户信息；
+2，KS3的bucket名字，在什么region；
+3，具体的问题现象截图，报什么错误；报错信息文字版提供一下。
+4，RequestID信息，以及请求的时间点信息；
+   如果是KS3Utils工具，requestID在/ks3util-1.1.2/bin/logs/warn.log文件中，其他情况具体看，比如浏览器F12或者客户业务日志。
+5，使用什么方式上传文件；工具还是SDK？
+6，上传的是大文件，小文件，分片上传？
+7，向KS3上传文件，错误码503情况，注意检查对应的URL域名解析是否正常；
+8，金山云主机内网上传吗？还是公网？
+9，python SDK 子账户删除bucket的问价报AccessDenied 403错误，检查子账户是否群组，群组里配置了ks3拒绝对应权限的策略。
+   常见的SDK异常问题排查： https://docs.ksyun.com/documents/5431
+
+1，场景是客户通过Hadoop访问KS3上的文件报错403
+[user1@ ~]$ hadoop fs -ls ks3://你的bucket名字.对应的域名/
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/data/hadoop/tez/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/data/hadoop/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+19/08/01 09:54:22 INFO http.Ks3CoreController: GET http://对应的域名/你的bucket名字?delimiter=%2F&max-keys=1 HTTP/1.1
+19/08/01 09:54:22 INFO http.Ks3CoreController: Request Header->Authorization:KSS 你的AK信息:SK信息 【重点提示，这个信息不要泄露】
+19/08/01 09:54:22 INFO http.Ks3CoreController: Request Header->User-Agent:ks3-kss-java-sdk/ks3client/v0.8.2
+19/08/01 09:54:22 INFO http.Ks3CoreController: Request Header->Date:Thu, 01 Aug 2019 01:54:22 GMT
+19/08/01 09:54:22 INFO http.Ks3CoreController: Request Header->Content-Type:application/xml
+19/08/01 09:54:22 INFO http.Ks3CoreController: HTTP/1.1 403 Forbidden
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->Server:Tengine
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->Date:Thu, 01 Aug 2019 01:54:22 GMT
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->Content-Type:application/xml; charset=UTF-8
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->Transfer-Encoding:chunked
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->Connection:keep-alive
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->Vary:Accept-Encoding
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->X-Application-Context:application
+19/08/01 09:54:22 INFO http.Ks3CoreController: Response Header->x-kss-request-id:6f68261561c44a59804e9a8d166aeff3
+19/08/01 09:54:22 WARN http.Ks3CoreController: com.ksyun.ks3.exception.serviceside.AccessDeniedException:[RequestId:一串字符串组成的RequestID信息这个定位问题需要,Resource:/你的bucket名字/?delimiter=/&max-keys=1,Statue code:403,Expected statue code:200,Error code:AccessDenied,Error message:Access Denied]
+19/08/01 09:54:22 WARN ks3.Ks3FileSystemStore: 
+ls: `ks3://你的bucket名字.对应的域名/': No such file or directory
+
+1.1 检查客户的AK是否与调用的客户一致。
+1.2 检查对应的bucket空间策略设置：
+    操作接口，也就是操作的权限要配置。
+    资源，也就是对应的bucket或者是bucket下的目录，允许访问的资源，尤其需要注意的是"bucket_name"和"bucket_name/*"的配置是完全不同的。
+其实这个也很好理解，对比一下Linux或者Windows的目录，您就醍醐灌顶了吧。如果您允许目标用户访问整个bucket，那么您的设置就是"bucket_name"。
+    委托人，也就是允许访问的用户，需要注意的就是，如果是子账户，需要加上主账户的ID信息，格式如下：允许访问用户对应的主账户ID:user/允许访问用户名
+    
+    
