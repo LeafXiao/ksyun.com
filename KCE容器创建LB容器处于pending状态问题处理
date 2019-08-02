@@ -1,0 +1,22 @@
+KCE容器创建LB容器处于pending状态问题处理
+
+
+【问题现象：】
+KCE容器引擎创建的公网负载均衡，一直是pending状态。
+
+【问题分析：】
+通过describe pod或者 logs pod均未发现异常
+通过底层日志排查发现，存在“KsyunKCEDefaultRole”角色的载体发生变更，导致服务间调用因权限变更失败。
+正常情况下，在“角色管理>角色详情”中“角色名称：KsyunKCEDefaultRole”对应的角色载体是“kce服务”。
+出问题的环境中，KsyunKCEDefaultRole对应的角色载体是主账户ID。导致cloud-provider没有权限调用slb的openapi创建EIP，Pod一直处于pending状态。
+
+【解决方案：】
+1，删除“访问控制>角色管理”中KsyunKCEDefaultRole的角色。
+   删除KsyunKCEDefaultRole角色期间，不允许容器引擎新建LB和EIP，对已有的容器业务不受影响。
+
+2，完成第一步后，参考官网文档https://docs.ksyun.com/documents/5479
+  进入到容器引擎控制台，提示“容器服务需要创建默认角色”，点击【前往IAM控制台授权】，进行授权完成操作步骤即可新建KsyunKCEDefaultRole角色。
+  
+3，完成前两步，等待5分钟，后台完成角色授权相关的配置后即可创建SLB。至此问题解决。
+
+如果您遇到类似问题，希望能帮到您。
