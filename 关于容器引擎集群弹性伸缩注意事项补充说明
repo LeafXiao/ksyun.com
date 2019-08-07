@@ -1,0 +1,3 @@
+客户疑问：客户需要基于node节点的自动伸缩，Cluster AutoScaler 与基于监控指标的弹性伸缩服务相冲突，不要同时启用。 这儿说到的“基于监控指标的弹性伸缩服务”具体是什么，是Horizontal Pod Autoscaling？还是其他的？
+
+答疑：“基于监控指标的弹性伸缩服务”不是HPA，说的是金山云的弹性伸缩（Auto Scaling，简称AS）。参看https://docs.ksyun.com/documents/6203
