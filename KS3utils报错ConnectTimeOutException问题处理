@@ -1,0 +1,49 @@
+KS3utils报错ConnectTimeOutException问题处理
+
+
+
+【报错信息：】
+08-12 17:50:35 [main] ERROR c.k.ks3util.command.ListCommand L93 - list error,prefix=%s,marker=%s
+com.ksyun.ks3.exception.client.CallRemoteFailException: org.apache.http.conn.ConnectTimeoutException: Connect to ks3-cn-beijing-internal.ksyun.com:80 [客户配置的内网域名/内网地址] failed: connect timed out
+	at com.ksyun.ks3.http.Ks3CoreController.doExecute(Ks3CoreController.java:128)
+	at com.ksyun.ks3.http.Ks3CoreController.execute(Ks3CoreController.java:81)
+	at com.ksyun.ks3.service.Ks3Client.listObjects(Ks3Client.java:396)
+	at com.kingsoft.ks3util.command.ListCommand.execute(ListCommand.java:68)
+	at com.kingsoft.ks3util.command.BaseCommand.run(BaseCommand.java:68)
+	at com.kingsoft.ks3util.Ks3Util.main(Ks3Util.java:34)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 客户配置的内网域名/内网地址] failed: connect timed out
+	at org.apache.http.impl.conn.HttpClientConnectionOperator.connect(HttpClientConnectionOperator.java:132)
+	at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:318)
+	at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:363)
+	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:219)
+	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:195)
+	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:86)
+	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:108)
+	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:184)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:106)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at com.ksyun.ks3.http.Ks3CoreController.requestKs3(Ks3CoreController.java:229)
+	at com.ksyun.ks3.http.Ks3CoreController.doExecute(Ks3CoreController.java:126)
+	... 5 common frames omitted
+Caused by: java.net.SocketTimeoutException: connect timed out
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at org.apache.http.conn.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:72)
+	at org.apache.http.impl.conn.HttpClientConnectionOperator.connect(HttpClientConnectionOperator.java:123)
+	... 17 common frames omitted
+
+【问题原因：】
+1，如上述的报错信息，客户配置的是KS3的内网域名，但是客户是通过公网访问，所以报错超时。
+此时建议客户ping一下域名确认一下客户的网络环境。如果客户需求是通过公网访问，将endpoint配置为bucket的公网域名。
+
+2，配置bucket公网域名时，也容易出现这样的错误：bucketName.内网域名
+加了bucket名字，客户用ping测试肯定是能通的，但是用KS3utils工具访问时，肯定还是会报错：UnkownHostException或者timeout
+对应的解决方法就是endpoint配置中去掉bucketName
+
+
+
