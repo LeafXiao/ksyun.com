@@ -1,0 +1,22 @@
+托管ElasticSearch集群内存相关
+
+
+1，在ambari页面上配置ElasticSearch内存的方法
+进入ElasticSearch的Config配置页面，在jvm_options配置区域，找到下述的配置项：
+
+# Xms represents the initial size of total heap space
+# Xmx represents the maximum size of total heap space
+
+-Xms4g
+-Xmx4g
+
+1.1 ES服务默认配置都是4G
+1.2 托管ES集群节点的物理内存最小要求是8G，具体看客户的业务配置对应的内存，避免内存资源不足而引发问题影响业务。
+
+2，如果因为内存不足，出现报错 msg：no ElasticSearch node available
+解决方法：
+3.1  彻底解决问题的方法是扩容mstaer节点，因为不支持扩容集群已存在节点的物理内存，因而当需要扩容master节点的物理内存时，
+只能采取向集群扩容物理内存更大的节点用来做master节点。
+3.2  临时规避方法：将集群的一个节点只用于master only节点，不存储数据，不承载业务数据读写。此时该节点的ES服务占用内存会降低，
+然后调整ES服务的内存最大值，将物理内存给其他服务使用。此时即使master only节点出问题也不影响集群的业务。
+
