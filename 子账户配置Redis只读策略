@@ -1,0 +1,45 @@
+
+
+【客户需求：】
+子账户对Redis实例允许只读权限。
+
+【遇到的问题：】
+子账户登录，访问Redis控制台报错信息如下：
+获取概览页数据失败 lack of policy to [kcs:statisticdbinstances] the resources[], 具体信息请联系客服 }
+初始化请求失败lack of policy to [kcs:describevalidregion] the resources[], 具体信息请联系客服
+
+【解决方法：】
+问题原因就是客户配置的策略里面少了kcs:describevalidregion和kcs:statisticdbinstances策略，导致报错。
+也就是说谜底就在谜面上，所以兄弟们一般遇到问题不要害怕，有时候答案是很直观的。
+
+下面是子账户Redis实例完整的只读权限配置，可供参考。
+
+{
+	"Version": "2015-11-01",
+	"Statement": [
+		{
+			"Sid": "Stmt15457090509500",
+			"Effect": "Allow",
+			"Action": [
+				"kcs:DescribeCacheCluster",
+				"kcs:DescribeCacheClusters",
+				"kcs:DescribeCacheParameters",
+				"kcs:DescribeCacheSecurityRules",
+				"kcs:DescribeCacheDefaultParameters",
+				"kcs:DescribeCacheParameterGroups",
+				"kcs:DescribeCacheParameterGroup",
+				"kcs:DescribeCacheSecurityGroups",
+				"kcs:DescribeCacheSecurityGroup",
+				"kcs:DescribeSnapshots",
+				"kcs:DescribeCacheReadonlyNode",
+				"kcs:DescribeRegions",
+				"kcs:DescribeAvailabilityZones",
+				"kcs:DescribeValidRegion",
+				"kcs:StatisticDBInstances"
+			],
+			"Resource": [
+				"*"
+			]
+		}
+	]
+}
