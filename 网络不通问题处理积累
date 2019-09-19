@@ -12,3 +12,7 @@ https://tools.ipip.net/traceroute.php
 
 3，用免费的 17ce.com get下 客户的业务url测试一下。
 
+4，云主机网络不通ssh 登录不上，海外region的可能存在GFW封禁的情况。
+
+5，业务URL访问慢的情况，用火狐浏览器F12调试看看，能统计总的页面加载时间。
+    对于图片等大资源可能会用到CDN加速，如果用到CDN则对应关注一下CDN侧是否有异常。
