@@ -1,0 +1,14 @@
+需要收集的信息：
+
+1，报障用户终端侧出口IP、ping、trace、mtr、curl，时间点等截图； 
+另外访问慢不仅仅是网络上的慢，还可能存在其他因素，如页面某个资源加载慢等等。
+
+curl测试命令： curl  -o  /dev/null   -s -w %{time_connect}:%{time_starttransfer}:%{time_total}  待测试的url
+
+在ipip.net网址可以获取到出口IP,tracert业务访问地址。
+https://tools.ipip.net/traceroute.php
+
+2，客户那边有自己的网络监控？ 比如自己从机房监测或第三方的监测服务之类的。 
+
+3，用免费的 17ce.com get下 客户的业务url测试一下。
+
