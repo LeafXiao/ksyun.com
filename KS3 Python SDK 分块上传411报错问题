@@ -76,3 +76,15 @@ try:
         print("上传成功")
 except:
     pass #异常处理
+    
+【补充：】
+test_source_path = base_dir / 'test.img'
+test_source_size = test_source_path.stat().st_size  
+
+和下面的使用方式是等价的
+test_source_path = base_dir / 'test.img'
+test_source_size = os.stat(test_source_path).st_size.st_size  
+
+
+
+    
