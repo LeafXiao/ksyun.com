@@ -45,7 +45,7 @@ except:
     pass #异常处理
 
 
-【参看的官网实例代码】
+【参看的官网示例代码】
 from ks3.connection import Connection
 from filechunkio import FileChunkIO
 import math, os
