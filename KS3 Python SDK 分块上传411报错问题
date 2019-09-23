@@ -1,0 +1,78 @@
+KS3 Python SDK 分块上传411报错问题处理总结
+
+截止2019-09-23 时间点 KS3 Python SDK的最新版本是1.0.12  ks3sdk==1.0.12
+版本查看方法：
+Windows 下执行命令： pip list | findstr ks3
+Linux下执行命令:  pip list | grep  ks3
+
+
+【问题现象：】
+客户参看https://docs.ksyun.com/documents/965#put-object 官网资料使用Python SDK分块上传文件。
+报错信息如下：
+
+ks3.exception.S3ResponseError: S3ResponseError: 411 Length Required
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Error><Code>MissingContentLength</Code>
+<Message>You must provide the Content-Length HTTP header.</Message>
+<Resource>/bucket名字和谐处理/mysql/具体文件路径及文件名和谐处理?uploadId=981ac54c局部和谐处理08334de42153bcfd2&amp;partNumber=5</Resource>
+<RequestId>a06ef2b315bd局部和谐处理365b0295f1</RequestId>
+</Error>
+
+
+【问题原因：】
+当文件大小正好被分块大小整除的时候，最后一个文件块返回为0，会触发上述问题。
+
+【解决方法：】
+try:
+    for i in range(chunk_count + 1):
+        offset = chunk_size * i
+        last = False
+        bytes = min(chunk_size, source_size - offset)
+        ###为解决上述的411   MissingContentLength 报错添加代码  start######
+        if bytes == 0:
+          break
+        ###为解决上述的411   MissingContentLength 报错添加代码  end######
+        
+        if i == chunk_count + 1:
+            last = True
+        with FileChunkIO(source_path, 'r', offset=offset,bytes=bytes) as fp:
+            mp.upload_part_from_file(fp, part_num=i + 1, is_last_part=last)
+
+    ret = mp.complete_upload()
+    if ret and ret.status == 200:
+        print("上传成功")
+except:
+    pass #异常处理
+
+
+【参看的官网实例代码】
+from ks3.connection import Connection
+from filechunkio import FileChunkIO
+import math, os
+ak = 'YOUR_ACCESS_KEY'
+sk = 'YOUR_SECRET_KEY'
+c = Connection(ak, sk, host='YOUR_REGION_ENDPOINT',is_secure=False, domain_mode=False, local_encrypt=True, 
+       local_key_path="your_key_path")
+
+b = c.get_bucket("your_bucket")
+source_path = 'SOURCE_FILE_PATH'
+source_size = os.stat(source_path).st_size
+mp = bucket.initiate_multipart_upload(os.path.basename(source_path))
+# Use a chunk size of 50 MiB (feel free to change this)
+chunk_size = 52428800
+chunk_count = int(math.ceil(source_size // chunk_size))
+try:
+    for i in range(chunk_count + 1):
+        offset = chunk_size * i
+        last = False
+        bytes = min(chunk_size, source_size - offset)
+        if i == chunk_count + 1:
+            last = True
+        with FileChunkIO(source_path, 'r', offset=offset,bytes=bytes) as fp:
+            mp.upload_part_from_file(fp, part_num=i + 1, is_last_part=last)
+
+    ret = mp.complete_upload()
+    if ret and ret.status == 200:
+        print("上传成功")
+except:
+    pass #异常处理
