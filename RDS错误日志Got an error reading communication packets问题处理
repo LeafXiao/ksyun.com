@@ -1,0 +1,23 @@
+RDS错误日志Got an error reading communication packets问题处理
+
+
+【问题现象：】
+KRDS实例的错误日志提示
+2019-09-23 11:00:13 14590 [Warning] Aborted connection 1989458 to db: '数据库名字和谐处理' 
+user: '用户名和谐处理' host: 'ip地址和谐处理' (Got an error writing communication packets)
+
+连接KRDS实例的客户端报错：
+{"level":"error","time":"2019-09-19T01:47:29.052+0800","msg":"dial tcp  KRDS实例IP地址:3306: 
+connect: connection timed out","error_id":1568828部分和谐处理86756,"error_code":99999999,"cap":1,
+"pos":"x和谐.go:386,sha和谐us.link.go:107,
+en和谐.link.go:60,consumer.go:80,asm_amd64.s:1333"}
+
+
+【问题排查：】
+查看对应时间段KRDS实例的监控发现：
+InnoDB磁盘访问次数---几乎为0
+Insert操作数---几乎为0
+Update操作数---几乎为0
+TPS, IO吞吐，IOPS---几乎为0
+连接数----猛增
+实例所有操作都中止，磁盘IO都停。 处于假死状态 
