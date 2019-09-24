@@ -32,3 +32,6 @@ show global status like '%open_tables%';
 select @@global.table_open_cache;
 
 2，增加告警监控：
+支持的监控项说明：https://docs.ksyun.com/documents/26#five  
+支持TPS， IO吞吐， IOPS， uddate、insert操作数，InnoDB磁盘访问次数，连接数，慢查这些监控指标，建议也添加上告警监控。
+不仅设置上限阈值，建议也设置下限阈值。
