@@ -20,4 +20,15 @@ Insert操作数---几乎为0
 Update操作数---几乎为0
 TPS, IO吞吐，IOPS---几乎为0
 连接数----猛增
-实例所有操作都中止，磁盘IO都停。 处于假死状态 
+实例所有操作都中止，磁盘IO都停。 
+研发从底层日志看：有SQL堆积。有很多链接处于Opening tables状态。
+
+【处理方法：】
+建议增大table_open_cache，同时优化慢查。增加从库解决不了根本问题 建议先调大table_open_cache，然后优化慢查询。
+
+【补充：】
+1，table_open_cache查看方法： 
+show global status like '%open_tables%';
+select @@global.table_open_cache;
+
+2，增加告警监控：
