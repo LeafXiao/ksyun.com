@@ -1,0 +1,18 @@
+MongoDB副本集中primary节点处于关闭状态的可能原因：
+
+
+
+1，主从切换了，然后新的从节点在追数据，这个从guestagent层面上判断是不可用状态，所以是关闭了。
+
+2，原因是：连接数满了，所以无法获取到primary的状态；
+处理方法： 需要用数释放连接数。
+检测程序占用了几个连接数。所以给出的没有1000个。
+连接数规格说明：https://docs.ksyun.com/documents/667
+
+总的查看连接数，还剩余多少可用连接，执行下述命令：
+db.serverStatus().connections
+例如得到下述输出：       
+{ "current" : 1376, "available" : 624, "totalCreated" : NumberLong(213098) }
+
+3，primary节点处于关闭状态的另一个可能的原因： 节点所在的宿主机出现异常。
+
