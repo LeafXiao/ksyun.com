@@ -1,0 +1,22 @@
+Q客户疑问：有个问题 金山云RDS是否每个实例都有隐藏实例？  假设RDS宕机了，对应隐藏实例是否会自动承担业务？
+
+A：master节点是有standby（隐藏节点，正常情况下对客户不可见）如果master节点异常，standby会自动承接业务。
+切换时间5秒以内，如果业务客户端采用复制集连接方式，切换过程是不影响业务的；
+只读实例是没有的。
+官网资料：https://docs.ksyun.com/documents/6017  
+
+
+【补充复制集连接方式：】
+语法格式：mongodb://user:password@host1:port1,host2:port2/database?authSource=admin[&option1][&option2][&option3]...
+举例如下：
+mongodb://username:password@10.0.0.1:27017,10.0.0.2:27017/dbname?authSource=admin&replicaSet="xxxxxxxxxxxxxxxxxxx"&readPreference=secondaryPreferred
+
+参数说明：
+username:password   --用户名，密码
+host:port需要把主从都写上，用逗号隔开  【重要事情说三遍】  都写上、都写上、都写上
+dbname:  数据库名
+authSource=admin     通过admin库对登录的用户名和密码进行认证
+
+可选项：
+replicaSet="xxxxxxxxxxxxxxxxxxx" 复制集的名称，在我们云数据库上指 实例ID， 可以写上
+readPreference=secondaryPreferred  设置读写分离  
