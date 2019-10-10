@@ -1,0 +1,18 @@
+物理服务器磁盘异常，需要换盘涉及到磁盘槽位信息确认操作。
+
+Linux下查找磁盘槽位方法， sas3icu工具确定磁盘槽位信息，更换磁盘磁盘是点灯操作。
+
+1， smartctl -a /dev/sdX查看sdX对应的硬盘SN 
+
+2，使用 sas3icu工具确定槽位信息
+执行命令：   ./sas3ircu  0  display | grep -B 10   磁盘序列号
+
+3，再次确认槽位是否正确？
+ll /dev/disk/by-id/ | grep 坏盘得盘符
+再用磁盘的ID，用它上面sas3ircu  display  再确认一下是不是第二步查询到的槽位
+
+4，维修时，故障盘点灯操作
+具体点灯执行的命令./sas3ircu 0 locate 2:6 on ，其中 2:6  是对应的槽位信息 Enclosure：Slot
+
+5，维修完成后关灯
+./sas3ircu 0 locate 2:6 off 其中 2:6  是对应的槽位信息 Enclosure：Slot
