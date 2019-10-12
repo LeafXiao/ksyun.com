@@ -40,6 +40,9 @@ KS3上的文件都是money；
 8，金山云主机内网上传吗？还是公网？
 9，python SDK 子账户删除bucket的问价报AccessDenied 403错误，检查子账户是否群组，群组里配置了ks3拒绝对应权限的策略。
    常见的SDK异常问题排查： https://docs.ksyun.com/documents/5431
+10，空间策略是否配置了访问IP限制，官网说明资料https://docs.ksyun.com/documents/872
+  需要注意的一种情况是，放通内网IP时，部分客户的云主机是通过NAT方式来访问KS3，此时空间策略的IP限制需要放通255.0.0.0/8(私有保留地址段)
+  这个是KS3经过NAT处理的客户端地址段。
 
 1，场景是客户通过Hadoop访问KS3上的文件报错403
 [user1@ ~]$ hadoop fs -ls ks3://你的bucket名字.对应的域名/
