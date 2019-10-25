@@ -1,0 +1,27 @@
+KS3文件名为特殊字符删除时报错404问题
+
+
+1，【问题描述】
+因文件名包含特殊字符，在控制台或者用KS3Utils工具删除时报错404，文件不存在。
+
+下述是用KS3Utils工具删除的报错日志：
+10-24 17:12:13 [main] ERROR com.kingsoft.ks3util.Ks3Util L41 - Command error
+java.lang.IllegalArgumentException: config file is required
+	at com.kingsoft.ks3util.command.BaseCommand.loadResFile(BaseCommand.java:103)
+	at com.kingsoft.ks3util.command.BaseCommand.run(BaseCommand.java:55)
+	at com.kingsoft.ks3util.Ks3Util.main(Ks3Util.java:34)
+10-24 17:19:10 [pool-1-thread-1] ERROR c.k.ks3util.command.MultiDelCommand L96 - delete error,key=,#x1;=k�"\Zl�Ƀ�#x16;�#x14;�E˧�#x1f;���P��
+com.ksyun.ks3.exception.serviceside.NoSuchKeyException: 
+	at com.ksyun.ks3.http.Ks3CoreController.doExecute(Ks3CoreController.java:136)
+	at com.ksyun.ks3.http.Ks3CoreController.execute(Ks3CoreController.java:81)
+	at com.ksyun.ks3.service.Ks3Client.deleteObject(Ks3Client.java:406)
+	at com.ksyun.ks3.service.Ks3Client.deleteObject(Ks3Client.java:401)
+	at com.kingsoft.ks3util.command.MultiDelCommand$DelObjTask.run(MultiDelCommand.java:94)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+10-24 17:19:10 [pool-1-thread-1] WARN  com.ksyun.ks3.http.Ks3CoreController L95 - com.ksyun.ks3.exception.serviceside.NoSuchKeyException:[RequestId:457d4d042f5c495部分和谐d6e6a,Resource:/attachments/,#x1;=k�"\Zl�Ƀ�#x16;�#x14;�E˧�#x1f;���P��,Statue code:404,Expected statue code:204,Error code:NoSuchKey,Error message:The specified key does not exist.]
+
+1，【处理方法】
+https://docs.ksyun.com/documents/923 参看官网资料，做转码处理即可解决问题。
