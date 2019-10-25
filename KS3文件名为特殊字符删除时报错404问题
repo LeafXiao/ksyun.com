@@ -41,7 +41,7 @@ import com.ksyun.ks3.service.Ks3ClientConfig;
 import common.Temp;
 
 /**
- * Created by leon.L on 2019/10/25.
+ * Created  on 2019/10/25.
  * Desc :
  */
 public class KS3Utils {
