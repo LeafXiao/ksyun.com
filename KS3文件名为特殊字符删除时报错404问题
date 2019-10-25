@@ -27,7 +27,8 @@ com.ksyun.ks3.exception.serviceside.NoSuchKeyException:
 https://docs.ksyun.com/documents/923 参看官网资料，做转码处理即可解决问题。
 
 3，【处理步骤：】
-A，用java sdk列出文件名  B，对文件名转码处理  C，调用java sdk的删除文件接口
+A，用Java SDK列出文件名  B，使用Java SDK对文件名转码处理  C，调用Java SDK的删除文件接口
+需要注意的是不能用KS3utils工具才操作上面的A和C两步，都需要用Java SDK来实现，而且目前（2019-10-25）Python SDK里面没有转码的实现。
 
 4，对应的java 代码，对应修改您的bucket name  AK  SK后执行代码就可以删除。
 package utils;
