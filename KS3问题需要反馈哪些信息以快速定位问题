@@ -15,3 +15,10 @@ E，	报错请求的requestID信息，这个信息很重要。能够快速过滤
 如果是KS3Utils工具，requestID在/ks3util-1.1.2（这个是环境具体版本信息）/bin/logs/warn.log文件中，其他情况具体看，比如浏览器F12或者客户业务日志。
 F，	文件上传相关故障：是大文件还是小文件？是否分片上传？
 G，	网络超时相关问题：访问是通过公网还是金山云内网，客户端到KS3域名ping测试网络是否正常。
+
+3，其他具体问题具体收集信息
+（1）	向KS3上传文件，错误码503情况，注意检查对应的URL域名解析是否正常；如果域名解析异常请配置金山云DNS地址。
+（2）	python SDK 子账户删除bucket的问价报AccessDenied 403错误，检查子账户是否群组，群组里配置了ks3拒绝对应权限的策略。常见的SDK异常问题排查： https://docs.ksyun.com/documents/5431
+（3）	客户端访问KS3失败：空间策略是否配置了访问IP限制，官网说明资料https://docs.ksyun.com/documents/872。需要注意的一种情况是，放通内网IP时，部分客户的云主机是通过NAT方式来访问KS3，此时空间策略的IP限制需要放通255.0.0.0/8(私有保留地址段)这个是KS3经过NAT处理的客户端地址段。
+（4）	报错提示：S3ResponseError: 403 Forbidden   The KS3 access key Id you provided does not exist in our records.
+问题原因是：客户更新了AK，老的AK失效了。
