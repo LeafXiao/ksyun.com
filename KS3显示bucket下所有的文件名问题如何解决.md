@@ -11,7 +11,9 @@
  方法2：有些客户的业务很特殊，需要公开权限，此时可以通过“空间策略设置”来实现需求，具体配置如下。
  一、Bucket的权限继续为公开不变；
 ![image]https://github.com/LeafXiao/pics/blob/master/1.png
+
  二、设置“空间策略”，对所有的用户配置listBucket权限为deny；
+ 
  三、如果部分用户还需要列出文件（listBucket）权限，则在“空间策略”上述第二步deny配置的后面加上具体需要listBucket权限的allow配置即可。
  
  
