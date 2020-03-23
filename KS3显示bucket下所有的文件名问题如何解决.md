@@ -10,7 +10,7 @@
  方法1：简单直接；因为是公开的Bucket权限能列出文件信息，所以设置Bucket权限为私密。
  方法2：有些客户的业务很特殊，需要公开权限，此时可以通过“空间策略设置”来实现需求，具体配置如下。
  一、Bucket的权限继续为公开不变；
-![image]https://github.com/LeafXiao/pics/blob/master/1.png
+![image](https://github.com/LeafXiao/pics/blob/master/1.png)
 
  二、设置“空间策略”，对所有的用户配置listBucket权限为deny；
  
