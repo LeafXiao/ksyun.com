@@ -1,0 +1,27 @@
+需求描述：
+使用JavaScript SDK实现业务上传文件，参看官网资料：https://docs.ksyun.com/documents/969
+在文件上传到KS3之前做判断，比如文件大小不能超过500M，如果超过500M则不允许用户在web上传文件到KS3。
+客户使用new ks3FileUploader上传。
+
+实现方，2种方法实现：
+第一种，在pluploadOptions 里增加filters配置，例如
+filters: {
+max_file_size : '400kb',
+}
+选择超出限制的文件后，会触发onErrorCallBack回调，不会上传到ks3上。
+
+第二种，在onFilesAddedCallBack 回调中判断，超出限制后删除文件
+function fileAddedCallBack (pl, files) {
+var limit = 400*1024;
+for(let i = 0, l = files.length; i < l; i++){
+let file = files[i];
+if(file.size >= limit) {
+pl.removeFile(file)
+i--;
+l--;
+alert('您选择的文件超出限制，最大不可超过400kb')
+}
+}
+}
+建议第一种，比较省事
+pluploadOptions更多配置，详见https://www.plupload.com/docs/
