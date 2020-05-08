@@ -124,4 +124,10 @@ ks3.exception.S3ResponseError: S3ResponseError: 403 Forbidden
 报错提示：S3ResponseError: 403 Forbidden   The KS3 access key Id you provided does not exist in our records.
 问题原因是：客户更新了AK，老的AK失效了。
 
-    
+4，如果endpoint填写不正确，也会报错403。
+
+5，微信小程序，需要在防盗链中设置白名单放行。
+
+6，JAVA SDK中如果设置了这个属性后解决问题 config.setPathStyleAccess(false)，则需要采用对应的URL格式。否则也会报错403.
+具体官网参数含义说明资料： https://docs.ksyun.com/documents/963
+
