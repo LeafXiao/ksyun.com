@@ -142,4 +142,10 @@ ks3.exception.S3ResponseError: S3ResponseError: 403 Forbidden
 具体官网参数含义说明资料： https://docs.ksyun.com/documents/963
 
 7，因为bucket为归档存储，客户使用KS3Util工具下载未解冻的文件，会报错403： InvalidObjectStateException  Statue code:403
+具体的报错信息如下：
+Server error:com.ksyun.ks3.exception.serviceside.InvalidObjectStateException:[RequestId:6bfd63abf1b1部分和谐处理c8c28e8c3,Resource:/bucket名字和谐处理/文件名和谐处理,
+Statue code:403,Expected statue code:200,206,304,412,Error code:InvalidObjectState,Error message:The operation is not valid for the current state of the object.]
+
+对于归档文件官网资料：https://docs.ksyun.com/documents/5973
+下载前必须要解冻处理，解冻支持手动页面上点击“解冻”操作，也支持用接口处理。
 
