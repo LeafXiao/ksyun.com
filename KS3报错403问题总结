@@ -141,3 +141,5 @@ ks3.exception.S3ResponseError: S3ResponseError: 403 Forbidden
 6，JAVA SDK中如果设置了这个属性后解决问题 config.setPathStyleAccess(false)，则需要采用对应的URL格式。否则也会报错403.
 具体官网参数含义说明资料： https://docs.ksyun.com/documents/963
 
+7，因为bucket为归档存储，客户使用KS3Util工具下载未解冻的文件，会报错403： InvalidObjectStateException  Statue code:403
+
