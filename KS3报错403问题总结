@@ -3,7 +3,7 @@
 A，AK,SK使用的不对，或者与权限对应不上，不匹配；
 B，对应的bucket空间策略设置没有给访问的账户权限，或者是resource配置不正确；
 C，用户策略userpolicy配置不正确。
-D, 经常遇到的一个原因： KS3util工具的配置文件sample.conf里面ks3.ak   ks3.sk   ks3.endpoint  ks3.protocol
+D, 经常遇到的一个问题，需要提醒一下： KS3util工具的配置文件sample.conf里面ks3.ak   ks3.sk   ks3.endpoint  ks3.protocol
    这个几个必须配置参数后面不允许有任何中文，哪怕是您用#"注释"了，一旦有中文一定会报错，而且报错还会有乱码提示。相信我！！！
 E，还是KS3util工具的配置文件sample.conf配置文件常范的错误： ks3.endpoint的值不要包含bucket名字。
    不理解endpoint的参考：https://docs.ksyun.com/documents/6761
