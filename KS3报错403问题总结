@@ -1,4 +1,5 @@
-实际工作中经常遇到KS3报错403的问题，虽然有多种业务场景但是403报错的实质都是权限相关的问题。
+实际工作中经常遇到KS3报错403的问题，不同情况总结如下。
+
 常见可能的原因包含：
 A，AK,SK使用的不对，或者与权限对应不上，不匹配；
 B，对应的bucket空间策略设置没有给访问的账户权限，或者是resource配置不正确；
@@ -6,16 +7,16 @@ C，用户策略userpolicy配置不正确。
 D, 经常遇到的一个问题，需要提醒一下： KS3util工具的配置文件sample.conf里面ks3.ak   ks3.sk   ks3.endpoint  ks3.protocol
    这个几个必须配置参数后面不允许有任何中文，哪怕是您用#"注释"了，一旦有中文一定会报错，而且报错还会有乱码提示。相信我！！！
 E，还是KS3util工具的配置文件sample.conf配置文件常范的错误： ks3.endpoint的值不要包含bucket名字。
-   不理解endpoint的参考：https://docs.ksyun.com/documents/6761
+   endpoint参考官网：https://docs.ksyun.com/documents/6761
 F, 2020-06-19 遇到一个KS3Util下载文件403的问题在此补充一下：
    原因是客户下载的是归档的文件，归档的文件需要先解冻操作，具体参看：https://docs.ksyun.com/documents/5973
-   划重点：说明 归档文件必须完成解冻，才能正常下载。
+   划重点：归档文件必须完成解冻，才能正常下载。
+E，小概率是因为配置的bucket名字或者endpoint不正确。
 
+关于空间策略，用户权限两个是独立的概念，很多用户以为在bucket配置了空间策略的“委托人”就是对用户授权了，实际上不完全正确的。
+具体的授权处理逻辑参看官网给出的流程图：https://docs.ksyun.com/documents/5180
 
-
-
-首先关于空间策略，用户权限两个是独立的概念，很多用户以为在bucket配置了空间策略的“委托人”就是对用户授权了，实际上不是的。
-【通俗的解释一下，希望您能明白：
+【通俗的解释一下，希望有帮助：
 KS3上的文件都是money；
 空间策略（操作接口+资源+委托人）是允许什么人花多少钱的规则设置；
 用户策略（userpolicy）则是用户花钱的能力，一个三岁喝奶粉的小孩和一个需要买房买车娶媳妇儿的成年人花钱的能力肯定是不一样的嘛。
@@ -145,7 +146,7 @@ ks3.exception.S3ResponseError: S3ResponseError: 403 Forbidden
 具体的报错信息如下：
 Server error:com.ksyun.ks3.exception.serviceside.InvalidObjectStateException:[RequestId:6bfd63abf1b1部分和谐处理c8c28e8c3,Resource:/bucket名字和谐处理/文件名和谐处理,
 Statue code:403,Expected statue code:200,206,304,412,Error code:InvalidObjectState,Error message:The operation is not valid for the current state of the object.]
-
-对于归档文件官网资料：https://docs.ksyun.com/documents/5973
+【补充信息】
+对于归档文件官网资料参看：https://docs.ksyun.com/documents/5973
 下载前必须要解冻处理，解冻支持手动页面上点击“解冻”操作，也支持用接口处理。
 
