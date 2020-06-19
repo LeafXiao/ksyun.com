@@ -3,6 +3,16 @@
 A，AK,SK使用的不对，或者与权限对应不上，不匹配；
 B，对应的bucket空间策略设置没有给访问的账户权限，或者是resource配置不正确；
 C，用户策略userpolicy配置不正确。
+D, 经常遇到的一个原因： KS3util工具的配置文件sample.conf里面ks3.ak   ks3.sk   ks3.endpoint  ks3.protocol
+   这个几个必须配置参数后面不允许有任何中文，哪怕是您用#"注释"了，一旦有中文一定会报错，而且报错还会有乱码提示。相信我！！！
+E，还是KS3util工具的配置文件sample.conf配置文件常范的错误： ks3.endpoint的值不要包含bucket名字。
+   不理解endpoint的参考：https://docs.ksyun.com/documents/6761
+F, 2020-06-19 遇到一个KS3Util下载文件403的问题在此补充一下：
+   原因是客户下载的是归档的文件，归档的文件需要先解冻操作，具体参看：https://docs.ksyun.com/documents/5973
+   划重点：说明 归档文件必须完成解冻，才能正常下载。
+
+
+
 
 首先关于空间策略，用户权限两个是独立的概念，很多用户以为在bucket配置了空间策略的“委托人”就是对用户授权了，实际上不是的。
 【通俗的解释一下，希望您能明白：
