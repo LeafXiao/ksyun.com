@@ -1,1 +1,11 @@
-Windows2019安装telnet client 错误: 0x80070422
+【问题现象：】
+Windows2019 server 数据中心版本 安装telnet client 错误: 0x80070422
+
+网上找了很多方法始终没有解决，按下述方法能快速解决问题。
+
+【解决方法：】
+1， 开启防火墙，如果用常见的控制面板窗口打开防火墙失败，用下述方法可行。
+以管理员身份打开cmd命令行工具（不是powershell），执行命令：
+reg add "HKLM\SYSTEM\CurrentControlSet\services\MpsSvc" /v Start /t REG_DWORD /d 2 /f
+
+2， Windows Update ， Windows installer 和 windows modules installer   三个服务要处于开启状态，否则还是会报错。
